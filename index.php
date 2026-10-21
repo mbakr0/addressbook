@@ -1,118 +1,62 @@
 <!doctype html>
-<html class="no-js" lang="en" dir="ltr">
-  <head>
+<html lang="en">
+<head>
     <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foundation for Sites</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AddressBook</title>
     <link rel="stylesheet" href="css/foundation.css">
-    <link rel="stylesheet" type="text/css" href="css/foundation-prototype.css">
+    <link rel="stylesheet" href="css/foundation-prototype.css">
     <link rel="stylesheet" href="css/app.css">
-  </head>
-  <body>
-  <div class="grid-container">
-  <div class="grid-x">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+<main class="app-shell">
+    <header class="app-header">
+        <div>
+            <span class="eyebrow">PERSONAL CONTACTS</span>
+            <h1>AddressBook</h1>
+            <p>Keep your contacts organized, searchable and easy to update.</p>
+        </div>
+        <button class="add-btn button primary" type="button">+ Add Contact</button>
+    </header>
 
-      <div class="cell large-6">
-        <h1 class="margin-1">Ajax Address Book</h1>
-      </div>
-      <div class="cell large-6">
-        <div class="clearfix"><a href="#" class="add-btn button float-right meduim margin-2 radius bordered shadow primary" data-open="myModel">Add Contact</a></div>
-      </div>
+    <section class="toolbar">
+        <label class="search-box">🔎 <input id="contactSearch" type="search" placeholder="Search contacts..."></label>
+        <span class="privacy-note">Your contacts stay in your database.</span>
+    </section>
 
-  </div>
+    <div class="loader" aria-label="Loading contacts"></div>
+    <section id="pageContent" aria-live="polite"></section>
+</main>
+
+<div id="myModel" class="large reveal contact-modal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+    <h2 id="modalTitle">Add Contact</h2>
+    <form id="contactForm" method="post">
+        <input id="contactId" type="hidden" name="id">
+        <div class="grid-x grid-padding-x">
+            <div class="cell medium-6"><label>First Name<input name="first_name" required maxlength="100"></label></div>
+            <div class="cell medium-6"><label>Last Name<input name="last_name" required maxlength="100"></label></div>
+            <div class="cell medium-6"><label>Email<input name="email" type="email" maxlength="190"></label></div>
+            <div class="cell medium-6"><label>Phone<input name="phone" type="tel" maxlength="50"></label></div>
+            <div class="cell medium-6"><label>Group<select name="contact_group"><option value="Family">Family</option><option value="Friends">Friends</option><option value="Business">Business</option></select></label></div>
+            <div class="cell medium-6"><label>City<input name="city" maxlength="100"></label></div>
+            <div class="cell medium-8"><label>Address<input name="address1" maxlength="255"></label></div>
+            <div class="cell medium-4"><label>ZIP Code<input name="zipcode" maxlength="20"></label></div>
+            <div class="cell medium-6"><label>Address 2<input name="address2" maxlength="255"></label></div>
+            <div class="cell medium-6"><label>State<input name="state" maxlength="100"></label></div>
+            <div class="cell"><label>Notes<textarea name="notes" rows="3" maxlength="2000"></textarea></label></div>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="button secondary" data-close>Cancel</button>
+            <input id="submitContact" type="submit" class="button primary" value="Save Contact">
+        </div>
+    </form>
+    <button class="close-button" data-close aria-label="Close modal" type="button"><span aria-hidden="true">&times;</span></button>
 </div>
 
-          <div id="myModel" class="large reveal" data-reveal data-animation-in="scale-in-up fast" data-animation-out="slide-out-up fast">
-          <h2>Add Contacts</h2>
-          <form id="addContant" method="post">
-            <div class="grid-x">
-              <div class="cell large-6 padding-right-1">
-                <label>First Name
-                      <input name="first_name" type="text" placeholder="Enter First name"/>
-                </label>
-              </div>
-                <div class="cell large-6">
-                <label>Last Name
-                      <input name="last_name" type="text" placeholder="Enter Last name"/>
-                </label>
-              </div>
-          </div>
-          <div class="grid-x">
-              <div class="cell large-4 padding-right-1">
-                <label>Email
-                      <input name="email" type="email" placeholder="Enter your email">
-                </label>
-                </div>
-                <div class="cell large-4 padding-right-1">
-                <label>Phone number
-                      <input name="phone" type="text" placeholder="Enter Phone number">
-                </label>
-              </div>
-              <div class="cell large-4">
-                <label>Contact group
-                      <select name="contact_group">
-                        <option value="husker">Family</option>
-                        <option value="starbucks">Friends</option>
-                        <option value="hotdog">Business</option>
-                      </select>
-                </label>
-              </div>
-            
-          </div>
-          <div class="grid-x">
-              <div class="cell large-6 padding-right-1">
-                <label>Address1
-                      <input name="address1" type="text" placeholder="Enter address">
-                </label>
-                </div>
-                <div class="cell large-6">
-                <label>Address2
-                      <input name="address2" type="text" placeholder="Enter Address">
-                </label>
-              </div>
-          </div>
-          <div class="grid-x">
-              <div class="cell large-4 padding-right-1">
-                <label>City
-                      <input name="city" type="text" placeholder="Enter your city">
-                </label>
-                </div>
-                <div class="cell large-4 padding-right-1">
-                <label>Zipcode
-                      <input name="zipcode" type="text" placeholder="Enter Zipcode">
-                </label>
-              </div>
-              <div class="cell large-4">
-                <label>State
-                      <select name="state">
-                        <option value="AL">Alabama</option>
-                        <option value="CA">California</option>
-                        <option value="HI">Hawaii</option>
-                      </select>
-                </label>
-              </div>
-          </div>
-          <div class="grid-x">
-              <div class="cell large-12">
-                <label>Notes
-                      <textarea name="notes" placeholder="Enter Notes"></textarea>
-                </label>
-            </div>
-          </div>
-          <input type="submit" class="add-btn button float-right meduim" name="submit" value="submit">
-          </form>
-          <button class="close-button" data-close aria-label="Close modal" type="button">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="loader"></div>
-        <div id="pageContent">
-          
-        </div>
-    <script src="js/vendor/jquery.js"></script>
-    <script src="js/vendor/what-input.js"></script>
-    <script src="js/vendor/foundation.js"></script>
-    <script src="js/app.js"></script>
-  </body>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="js/vendor/what-input.js"></script>
+<script src="js/vendor/foundation.js"></script>
+<script src="js/app.js"></script>
+</body>
 </html>
