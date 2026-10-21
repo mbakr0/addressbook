@@ -84,7 +84,8 @@ $(function () {
         $('#contactId').val(contact.id);
 
         Object.keys(contact).forEach(function (key) {
-            const $field = $('[name="' + key.replace(/-/g, '_') + '"]');
+            const fieldName = key.replace(/[A-Z]/g, function (letter) { return '_' + letter.toLowerCase(); });
+            const $field = $('[name="' + fieldName + '"]');
             if ($field.length) $field.val(contact[key]);
         });
 
