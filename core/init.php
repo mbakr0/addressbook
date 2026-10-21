@@ -1,8 +1,10 @@
 <?php
-require_once 'config/config.php';
-require_once 'helpers/system_helper.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../helpers/system_helper.php';
 
-function __autoload($class_name)
-{
-	require_once 'libraries/'.$class_name.'.php';
-}
+spl_autoload_register(function ($class_name) {
+    $file = __DIR__ . '/../libraries/' . $class_name . '.php';
+    if (is_file($file)) {
+        require_once $file;
+    }
+});
