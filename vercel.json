@@ -5,6 +5,10 @@
     }
   },
   "routes": [
+    {
+      "src": "/(index|contacts|add_contact|edit_contact|delete_contact)\\.php",
+      "dest": "/api/index.php?path=$1.php"
+    },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/api/index.php" }
   ]
