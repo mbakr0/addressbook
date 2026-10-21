@@ -17,11 +17,37 @@ class Database
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
             PDO::ATTR_EMULATE_PREPARES => false,
             // TiDB Cloud requires TLS. DB_SSL_CA can override the runtime CA bundle path.
-            Pdo\Mysql::ATTR_SSL_CA => getenv('DB_SSL_CA') ?: '/etc/ssl/certs/ca-certificates.crt',
-            Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT => true,
+            Pdo\\Mysql::ATTR_SSL_CA => getenv('DB_SSL_CA') ?: '/etc/ssl/certs/ca-certificates.crt',
+            Pdo\\Mysql::ATTR_SSL_VERIFY_SERVER_CERT => true,
         ];
 
         $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
+
+        // Bootstrap the contacts table on first connection if it doesn't exist yet.
+        // This creates an empty table; it cannot restore contacts from another database.
+        $this->ensureSchema();
+    }
+
+    private function ensureSchema()
+    {
+        $sql = "CREATE TABLE IF NOT EXISTS contacts (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            first_name VARCHAR(100) NOT NULL,
+            last_name VARCHAR(100) NOT NULL,
+            email VARCHAR(254) NOT NULL DEFAULT '',
+            phone VARCHAR(50) NOT NULL DEFAULT '',
+            address1 VARCHAR(255) NOT NULL DEFAULT '',
+            address2 VARCHAR(255) NOT NULL DEFAULT '',
+            city VARCHAR(100) NOT NULL DEFAULT '',
+            state VARCHAR(100) NOT NULL DEFAULT '',
+            zipcode VARCHAR(20) NOT NULL DEFAULT '',
+            contact_group VARCHAR(100) NOT NULL DEFAULT '',
+            notes TEXT NOT NULL,
+            PRIMARY KEY (id),
+            KEY idx_contacts_name (last_name, first_name)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+        $this->dbh->exec($sql);
     }
 
     public function query($query) { $this->stmt = $this->dbh->prepare($query); }
