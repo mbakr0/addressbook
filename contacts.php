@@ -1,47 +1,42 @@
-<?php include'core/init.php';?>
-<?php 
-    $db = new Database();
-    $db->query("SELECT * FROM contacts");
-    $contacts = $db->resultset();
+<?php
+require_once __DIR__ . '/core/init.php';
+$db = new Database();
+$db->query('SELECT * FROM contacts ORDER BY first_name ASC, last_name ASC');
+$contacts = $db->resultset();
 ?>
-      <div class="grid-container">
-        <div class="grid-y">
-          <div class="cell large-12">
-            <table class="unstriped">
-              <thead>
+<div class="contacts-panel">
+    <div class="contacts-heading">
+        <div><h2>Contacts</h2><span><?php echo count($contacts); ?> saved contact<?php echo count($contacts) === 1 ? '' : 's'; ?></span></div>
+    </div>
+    <?php if (!$contacts): ?>
+        <div class="empty-state"><div class="empty-icon">+</div><h3>No contacts yet</h3><p>Add your first contact to get started.</p></div>
+    <?php else: ?>
+    <div class="table-scroll">
+        <table id="contactsTable" class="unstriped modern-table">
+            <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Location</th><th>Group</th><th>Actions</th></tr></thead>
+            <tbody>
+            <?php foreach ($contacts as $contact):
+                $fullName = trim($contact->first_name . ' ' . $contact->last_name);
+                $location = trim(implode(', ', array_filter([$contact->city, $contact->state, $contact->zipcode])));
+                $attrs = '';
+                foreach (['first_name','last_name','email','phone','address1','address2','city','state','zipcode','contact_group','notes'] as $field) {
+                    $attrs .= ' data-' . str_replace('_', '-', $field) . '="' . htmlspecialchars((string)$contact->$field, ENT_QUOTES, 'UTF-8') . '"';
+                }
+            ?>
                 <tr>
-                  <th width="200" class="text-center">Names</th>
-                  <th width="130" class="text-center">Phone</th>
-                  <th width="200" class="text-center">Email</th>
-                  <th width="250" class="text-center">Address</th>
-                  <th width="100" class="text-center">Group</th>
-                  <th width="150" class="text-center">Actions</th>
+                    <td><strong><?php echo htmlspecialchars($fullName, ENT_QUOTES, 'UTF-8'); ?></strong></td>
+                    <td><?php echo htmlspecialchars($contact->phone ?: '—', ENT_QUOTES, 'UTF-8'); ?></td>
+                    <td><?php echo htmlspecialchars($contact->email ?: '—', ENT_QUOTES, 'UTF-8'); ?></td>
+                    <td><?php echo htmlspecialchars($location ?: '—', ENT_QUOTES, 'UTF-8'); ?></td>
+                    <td><span class="group-badge"><?php echo htmlspecialchars($contact->contact_group ?: 'Other', ENT_QUOTES, 'UTF-8'); ?></span></td>
+                    <td class="actions">
+                        <button type="button" class="button tiny edit-contact" data-id="<?php echo (int)$contact->id; ?>" <?php echo $attrs; ?>>Edit</button>
+                        <button type="button" class="button tiny alert delete-contact" data-id="<?php echo (int)$contact->id; ?>">Delete</button>
+                    </td>
                 </tr>
-              </thead>
-              <tbody>
-                <?php foreach($contacts as $contact):?>
-                <tr>
-                  <td class="text-center"><a href="contact.html"><?php echo $contact->first_name.' '.$contact->last_name;?></a></td>
-                  <td class="text-center"><?php echo $contact->phone;?></td>
-                  <td class="text-center"><?php echo $contact->email;?></td>
-                  <td>
-                    <ul>
-                      <li class="text-center"><?php echo $contact->address1;?> <?php echo $contact->address2;?></li>
-                      
-                      <li class="text-center"><?php echo $contact->city;?><?php echo $contact->state;?><?php echo $contact->zipcode;?></li>
-                    </ul>
-                  </td>
-                  <td class="text-center"><?php echo $contact->contact_group;?></td>
-                  <td>
-                    <ul class="button-group">
-                      <li><a href="#" class="button tiny" data-open="myModel">Edit</a></li>
-                      <li><a href="#" class="button tiny [secondary alert success]" >Delete</a></li>
-                    </ul>
-                  </td>
-                </tr>
-               <?php endforeach;?>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php endif; ?>
+</div>
